@@ -12,6 +12,7 @@ The project implements a microwave defrosting program and includes the complete 
 
 ## Repository Structure
 ```
+├── .github/             # GitHub Actions workflows and repository configurations
 ├── src/                 # Source code
 ├── tests/               # Unit and integration tests
 ├── docs/                # Task-related documents and required declarations
