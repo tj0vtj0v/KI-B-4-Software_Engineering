@@ -9,6 +9,7 @@
 
 This repository contains a submission project developed for the Software Engineering course in the 4th semester of the Artificial Intelligence bachelor's program at the Deggendorf Institute of Technology.
 The project implements a microwave defrosting program and includes the complete Agile development process, source code, technical documentation, sprint management, and a detailed Wiki.
+The entire project is developed based on the assignment specification dated May 10th, 2025: [Assignment (PDF)](https://github.com/tj0vtj0v/KI-B-4-Software_Engineering/blob/main/docs/assignment.pdf).
 
 ## Repository Structure
 ```
