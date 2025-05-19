@@ -11,6 +11,11 @@ This repository contains a submission project developed for the Software Enginee
 The project implements a microwave defrosting program and includes the complete Agile development process, source code, technical documentation, sprint management, and a detailed Wiki.
 The entire project is developed based on the assignment specification dated May 10th, 2025: [Assignment (PDF)](https://github.com/tj0vtj0v/KI-B-4-Software_Engineering/blob/main/docs/assignment.pdf).
 
+## Shortlinks
+
+- [Wiki](https://github.com/tj0vtj0v/KI-B-4-Software_Engineering/wiki)
+- [Project Management](https://github.com/users/tj0vtj0v/projects/2)
+
 ## Repository Structure
 ```
 ├── .github/             # GitHub Actions workflows and repository configurations
