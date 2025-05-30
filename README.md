@@ -22,7 +22,6 @@ The entire project is developed based on the assignment specification dated May 
 ├── src/                 # Source code
 ├── tests/               # Unit and integration tests
 ├── docs/                # Task-related documents and required declarations
-├── wiki/                # Wiki documentation files
 ├── README.md            # Project overview and setup guide
 ├── LICENSE              # MIT License file
 ├── requirements.txt     # Production dependencies
