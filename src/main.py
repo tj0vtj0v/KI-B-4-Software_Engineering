@@ -1,5 +1,10 @@
-def main() -> int:
-    """
-    This main function currently returns 1 for initialization purposes.
-    """
-    return 1
+from SystemControl import SystemControl
+
+
+def main():
+    system_control = SystemControl()
+    system_control.start()
+
+
+if __name__ == "__main__":
+    main()
