@@ -1,0 +1,17 @@
+@startuml
+participant "System Control" as System
+participant "Emergency Handler" as Emergency
+participant "Emergency Detector" as Detector
+participant "Logger" as Log
+
+activate System
+System -> Detector: notify main loop start
+activate Detector
+Detector-> System : execute main loop
+System --> Detector: exception occurred
+Detector-> Log : log error details
+Detector--> System : activate emergency state
+activate Emergency
+System -> Emergency: handle emergency
+Emergency--> System : emergency resolved
+@enduml
