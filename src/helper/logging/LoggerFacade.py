@@ -6,7 +6,7 @@ from src.helper.logging.LoggerInterface import LoggerInterface
 
 class LoggerFacade(LoggerInterface):
     def __init__(self, level: LogLevel = LogLevel.INFO, service: str = "DefaultService"):
-        self._logger = logging.getLogger(service)
+        self._logger = logging.getLogger()
         self._service = service
 
         if not self._logger.handlers:
