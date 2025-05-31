@@ -1,6 +1,7 @@
 name: Defrosting Program CI
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'src/**'
