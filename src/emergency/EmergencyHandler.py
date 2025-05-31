@@ -1,8 +1,13 @@
 from __future__ import annotations
 
-from src.helper.exceptions import CustomException, MockException
+from typing import TYPE_CHECKING
+
 from src.helper.Logger import Logger, LogLevel
 from src.helper.config import DEFAULT_LOG_LEVEL
+from src.helper.exceptions import CustomException, MockException
+
+if TYPE_CHECKING:
+    from src.SystemControl import SystemControl
 
 
 class EmergencyHandler:

@@ -11,7 +11,9 @@ class LoggerFacade(LoggerInterface):
 
         if not self._logger.handlers:
             handler = logging.StreamHandler()
-            formatter = logging.Formatter('[%(asctime)s] [%(threadName)s] %(levelname)s: %(message)s', datefmt='%H:%M:%S')
+            formatter = logging.Formatter(
+                '[%(asctime)s] [%(threadName)s] %(levelname)s: %(message)s', datefmt='%H:%M:%S'
+            )
             handler.setFormatter(formatter)
             self._logger.addHandler(handler)
 
