@@ -1,0 +1,9 @@
+please help me generating tests and extending the current ones due to updates in the corresponding implementation file. you may take the TestAlarmController or the TestDoorControler as reference, please use unittest and the class shall inherit from it.
+remember the guidelines:
+Test function naming: test_<function>__<condition>__<expected>()
+Example:
+
+def test_is_door_opened__additional_parameter__raises_type_error():
+    ...
+
+always generate a complete file. dont generate comments in the code, generate as fast as possible. and if you recognize untested parts, which can be easily tested, add them!
