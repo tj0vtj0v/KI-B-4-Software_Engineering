@@ -2,15 +2,20 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 from src.emergency.EmergencyHandler import EmergencyHandler
-from src.helper.exceptions import CustomException, MockException
+from src.helper.exceptions import CustomException, MockException, DoorException
 
 
 class DummySystemControl:
     def __init__(self):
         self.reset_called = False
+        self.stop_called = False
+        self.alarm_controller = MagicMock()
 
     def factory_reset(self):
         self.reset_called = True
+
+    def stop(self):
+        self.stop_called = True
 
 
 class TestEmergencyHandler(unittest.TestCase):
@@ -57,7 +62,7 @@ class TestEmergencyHandler(unittest.TestCase):
 
         self.assertIsInstance(EmergencyHandler.error, CustomException)
 
-    def test_observe__generic_exception_raised__calls_shutdown_and_logs(self):
+    def test_observe__generic_exception_raised__reraises_and_logs(self):
         class Dummy:
             def __init__(self):
                 self.shutdown_called = False
@@ -73,11 +78,20 @@ class TestEmergencyHandler(unittest.TestCase):
         d.shutdown = MagicMock()
 
         with patch.object(EmergencyHandler.logger, "log") as log_mock:
-            d.foo()
-            d.shutdown.assert_called_once()
+            with self.assertRaises(ValueError):
+                d.foo()
             log_mock.assert_called()
 
-        self.assertIsNone(EmergencyHandler.error)
+    def test_alarm_deactivated__when_emergency(self):
+        handler = EmergencyHandler()
+        handler.error = CustomException("alarm test")
+        sys_control = DummySystemControl()
+        sys_control.alarm_controller.deactivate_alarm = MagicMock()
+
+        with patch.object(handler.logger, "log"):
+            handler.handle_emergency(sys_control)
+
+        sys_control.alarm_controller.deactivate_alarm.assert_called_once()
 
     def test_is_busy__error_none_and_error_set__returns_false_and_true(self):
         self.assertFalse(EmergencyHandler.is_busy())
@@ -87,9 +101,11 @@ class TestEmergencyHandler(unittest.TestCase):
     def test_handle_emergency__mock_exception__logs_and_clears_error(self):
         handler = EmergencyHandler()
         handler.error = MockException()
+        sys_control = DummySystemControl()
+        sys_control.alarm_controller.deactivate_alarm = MagicMock()
 
         with patch.object(handler.logger, "log") as log_mock:
-            handler.handle_emergency(None)
+            handler.handle_emergency(sys_control)
             log_mock.assert_called()
 
         self.assertIsNone(EmergencyHandler.error)
@@ -98,9 +114,24 @@ class TestEmergencyHandler(unittest.TestCase):
         handler = EmergencyHandler()
         handler.error = CustomException("fail")
         sys_control = DummySystemControl()
+        sys_control.alarm_controller.deactivate_alarm = MagicMock()
 
         with patch.object(handler.logger, "log") as log_mock:
             handler.handle_emergency(sys_control)
             log_mock.assert_called()
 
         self.assertTrue(sys_control.reset_called)
+        sys_control.alarm_controller.deactivate_alarm.assert_called_once()
+
+    def test_handle_emergency__door_exception__logs_and_stops_system(self):
+        handler = EmergencyHandler()
+        handler.error = DoorException("door test")
+        sys_control = DummySystemControl()
+        sys_control.alarm_controller.deactivate_alarm = MagicMock()
+
+        with patch.object(handler.logger, "log") as log_mock:
+            handler.handle_emergency(sys_control)
+            log_mock.assert_called()
+
+        self.assertTrue(sys_control.stop_called)
+        sys_control.alarm_controller.deactivate_alarm.assert_called_once()

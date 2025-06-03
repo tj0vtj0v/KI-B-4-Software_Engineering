@@ -34,7 +34,28 @@ class TestLoggerFacade(unittest.TestCase):
         self.facade.log("Critical message", LogLevel.CRITICAL)
         mock_log.assert_called_with(LogLevel.CRITICAL, "TestService -> Critical message")
 
+    @patch("logging.Logger.log")
+    def test_log__empty_message__does_not_log(self, mock_log):
+        self.facade.log("", LogLevel.INFO)
+        mock_log.assert_not_called()
+
     def test_set_level__all_levels__sets_logger_level(self):
         for level in [LogLevel.DEBUG, LogLevel.INFO, LogLevel.WARNING, LogLevel.ERROR, LogLevel.CRITICAL]:
             self.facade.set_level(level)
             self.assertEqual(self.facade._logger.level, level)
+
+    def test_init__default_service__sets_default_service_name(self):
+        facade = LoggerFacade()
+        self.assertEqual(facade._service, "DefaultService")
+
+    def test_init__custom_service__sets_custom_service_name(self):
+        facade = LoggerFacade(service="CustomService")
+        self.assertEqual(facade._service, "CustomService")
+
+    def test_init__default_level__sets_default_log_level(self):
+        facade = LoggerFacade()
+        self.assertEqual(facade._logger.level, LogLevel.INFO)
+
+    def test_init__custom_level__sets_custom_log_level(self):
+        facade = LoggerFacade(level=LogLevel.DEBUG)
+        self.assertEqual(facade._logger.level, LogLevel.DEBUG)
