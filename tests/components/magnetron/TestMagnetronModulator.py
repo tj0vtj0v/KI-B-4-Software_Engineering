@@ -1,8 +1,6 @@
 import unittest
 from unittest.mock import MagicMock, patch
 
-import pytest
-
 from src.components.magnetron.MagnetronModulator import MagnetronModulator
 from src.helper.config import MAGNETRON_MAX_POWER_SHARE_PER_MINUTE, MAGNETRON_MAX_TEMP_IN_CELSIUS
 from src.helper.logging.LogLevel import LogLevel

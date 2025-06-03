@@ -5,7 +5,7 @@ from src.components.alarm.AlarmController import AlarmController
 from src.components.sensor.SensorManager import SensorManager
 from src.emergency.EmergencyHandler import EmergencyHandler
 from src.helper.Logger import Logger, LogLevel
-from src.helper.config import MAIN_LOOP_TIMEOUT_IN_SECONDS, DEFAULT_LOG_LEVEL
+from src.helper.config import MAIN_LOOP_TIMEOUT_IN_SECONDS
 from src.program.MockProgramController import MockProgramController
 from src.user.MockUserInteractionHandler import MockUserInteractionHandler
 
