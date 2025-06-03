@@ -3,8 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from src.helper.Logger import Logger, LogLevel
-from src.helper.config import DEFAULT_LOG_LEVEL
-from src.helper.exceptions import CustomException, MockException
+from src.helper.exceptions import CustomException, MockException, DoorException
 
 if TYPE_CHECKING:
     from src.SystemControl import SystemControl
@@ -12,7 +11,7 @@ if TYPE_CHECKING:
 
 class EmergencyHandler:
     error: CustomException | None = None
-    logger = Logger("EmergencyHandler", DEFAULT_LOG_LEVEL)
+    logger = Logger("EmergencyHandler")
 
     @classmethod
     def observe(cls, func):
@@ -27,7 +26,7 @@ class EmergencyHandler:
 
             except Exception as e:
                 cls.logger.log(f"Major error ({e}) occurred, shutting down.", level=LogLevel.CRITICAL)
-                self.shutdown()
+                raise e
 
         return wrapper
 
@@ -36,8 +35,17 @@ class EmergencyHandler:
         return cls.error is not None
 
     def handle_emergency(self, system_control: "SystemControl"):
+        system_control.alarm_controller.deactivate_alarm()
+
         if isinstance(self.error, MockException):
             self.logger.log("Mock exception occurred, simulating emergency handling.", level=LogLevel.ERROR)
+            EmergencyHandler.error = None
+
+            return
+
+        if isinstance(self.error, DoorException):
+            self.logger.log("Door exception occurred, stopping the system.", level=LogLevel.ERROR)
+            system_control.stop()
             EmergencyHandler.error = None
 
             return

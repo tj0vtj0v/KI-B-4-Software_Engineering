@@ -1,9 +1,11 @@
 import threading
 import time
 
+from src.components.alarm.AlarmController import AlarmController
+from src.components.sensor.SensorManager import SensorManager
 from src.emergency.EmergencyHandler import EmergencyHandler
-from src.helper.config import MAIN_LOOP_TIMEOUT_IN_SECONDS, DEFAULT_LOG_LEVEL
 from src.helper.Logger import Logger, LogLevel
+from src.helper.config import MAIN_LOOP_TIMEOUT_IN_SECONDS, DEFAULT_LOG_LEVEL
 from src.program.MockProgramController import MockProgramController
 from src.user.MockUserInteractionHandler import MockUserInteractionHandler
 
@@ -14,18 +16,15 @@ class SystemControl:
         RUNNING = "RUNNING"
         EMERGENCY = "EMERGENCY"
 
-    def __init__(
-            self,
-            logger=None,
-            emergency_handler=None,
-            user_interaction_handler=None,
-            program_controller=None
-    ):
+    def __init__(self, ):
         self.state = self.State.IDLE
-        self.logger = logger or Logger("SystemControl", DEFAULT_LOG_LEVEL)
-        self.emergency_handler = emergency_handler or EmergencyHandler()
-        self.user_interaction_handler = user_interaction_handler or MockUserInteractionHandler()
-        self.program_controller = program_controller or MockProgramController()
+
+        self.logger = Logger("SystemControl")
+        self.emergency_handler = EmergencyHandler()
+        self.alarm_controller = AlarmController()
+        self.user_interaction_handler = MockUserInteractionHandler()
+        self.program_controller = MockProgramController()
+        self.sensor_manager = SensorManager()
 
     def factory_reset(self):
         self.logger.log("Performing factory reset.")
@@ -36,17 +35,20 @@ class SystemControl:
         if self.state != self.State.EMERGENCY:
             self.logger.log("Declaring emergency state.")
 
+            if not self.alarm_controller.is_alarming():
+                self.alarm_controller.activate_alarm()
             self.state = self.State.EMERGENCY
 
         else:
             self.logger.log("System is already in emergency state.")
 
-    def shutdown(self):
+    def stop(self):
         if self.state == self.State.IDLE:
             self.logger.log("System is already idle, nothing to shut down.")
         else:
             self.logger.log("Shutting down system.")
 
+            self.sensor_manager.reset()
             self.program_controller.stop()
             self.state = self.State.IDLE
 
@@ -55,7 +57,7 @@ class SystemControl:
             self.state = self.State.RUNNING
             self.program_controller.start()
 
-            threading.Thread(target=self.loop, daemon=True).start()
+            threading.Thread(target=self.loop).start()
 
             self.logger.log("System started.")
         else:
@@ -92,3 +94,4 @@ class SystemControl:
         self.program_controller.update()
 
         self.user_interaction_handler.update_display()
+        self.sensor_manager.update_sensors()
