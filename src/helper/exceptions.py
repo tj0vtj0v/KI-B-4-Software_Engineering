@@ -10,3 +10,10 @@ class MockException(CustomException):
 
     def __init__(self):
         super().__init__("This is a mock exception.")
+
+
+class DoorException(CustomException):
+    """Exception raised for errors related to door operations."""
+
+    def __init__(self, message):
+        super().__init__(message)
