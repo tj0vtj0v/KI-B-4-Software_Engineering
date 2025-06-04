@@ -2,8 +2,7 @@
 
 ![](https://img.shields.io/badge/status-active-brightgreen)
 ![](https://img.shields.io/badge/python-3.12-blue.svg)
-![](https://img.shields.io/github/v/release/tj0vtj0v/KI-B-4-Software_Engineering)
-![](https://img.shields.io/codecov/c/github/tj0vtj0v/KI-B-4-Software_Engineering)
+![](https://img.shields.io/github/v/release/tj0vtj0v/KI-B-4-Software_Engineering?include_prereleases)
 ![](https://img.shields.io/badge/code%20style-flake8-brightgreen.svg)
 ![](https://img.shields.io/github/license/tj0vtj0v/KI-B-4-Software_Engineering)
 
