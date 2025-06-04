@@ -20,7 +20,8 @@ class LoggerFacade(LoggerInterface):
         self._logger.setLevel(level)
 
     def log(self, message: str, level: LogLevel = LogLevel.INFO) -> None:
-        self._logger.log(level, f"{self._service} -> {message}")
+        if len(message) > 0:
+            self._logger.log(level, f"{self._service} -> {message}")
 
     def set_level(self, level: LogLevel) -> None:
         self._logger.setLevel(level)

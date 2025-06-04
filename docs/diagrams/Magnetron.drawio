@@ -1,0 +1,76 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:139.0) Gecko/20100101 Firefox/139.0" version="27.1.1">
+  <diagram name="Page-1" id="F6wNCx-Krgz2bWngS-bc">
+    <mxGraphModel dx="988" dy="629" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1654" pageHeight="2336" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ftuWCaZ1uPiria0q5PKu-1" value="Magnetron" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="480" y="400" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ftuWCaZ1uPiria0q5PKu-2" value="- active: bool" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="ftuWCaZ1uPiria0q5PKu-1" vertex="1">
+          <mxGeometry y="26" width="160" height="26" as="geometry" />
+        </mxCell>
+        <mxCell id="ftuWCaZ1uPiria0q5PKu-3" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="ftuWCaZ1uPiria0q5PKu-1" vertex="1">
+          <mxGeometry y="52" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="ftuWCaZ1uPiria0q5PKu-4" value="&lt;div&gt;+ turn_on()&lt;/div&gt;&lt;div&gt;+ turn_off()&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="ftuWCaZ1uPiria0q5PKu-1" vertex="1">
+          <mxGeometry y="60" width="160" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="ftuWCaZ1uPiria0q5PKu-5" value="MagnetronModulator" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+          <mxGeometry x="200" y="280" width="160" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="ftuWCaZ1uPiria0q5PKu-6" value="&lt;div&gt;+ target_power_share: float&lt;/div&gt;&lt;div&gt;+ running: bool&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="ftuWCaZ1uPiria0q5PKu-5" vertex="1">
+          <mxGeometry y="26" width="160" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="ftuWCaZ1uPiria0q5PKu-7" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="ftuWCaZ1uPiria0q5PKu-5" vertex="1">
+          <mxGeometry y="60" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="ftuWCaZ1uPiria0q5PKu-8" value="&lt;div&gt;+ start()&lt;/div&gt;&lt;div&gt;+ stop()&lt;/div&gt;&lt;div&gt;+ set_target_power()&lt;/div&gt;&lt;div&gt;+ safety_hazard(): bool&lt;/div&gt;&lt;div&gt;+ magnetron_cycle()&lt;/div&gt;&lt;div&gt;+ magnetron_loop()&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="ftuWCaZ1uPiria0q5PKu-5" vertex="1">
+          <mxGeometry y="68" width="160" height="92" as="geometry" />
+        </mxCell>
+        <mxCell id="ftuWCaZ1uPiria0q5PKu-9" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=0.999;exitY=0.11;exitDx=0;exitDy=0;entryX=0.007;entryY=0.176;entryDx=0;entryDy=0;exitPerimeter=0;entryPerimeter=0;" parent="1" source="ftuWCaZ1uPiria0q5PKu-5" target="ftuWCaZ1uPiria0q5PKu-1" edge="1">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="330" y="310" as="sourcePoint" />
+            <mxPoint x="490" y="310" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="0OzzKOd5zw0-2eA2JMB0-1" value="" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;exitX=1.004;exitY=0.107;exitDx=0;exitDy=0;exitPerimeter=0;entryX=-0.007;entryY=0.162;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="ftuWCaZ1uPiria0q5PKu-5" target="0OzzKOd5zw0-2eA2JMB0-2">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="440" y="90" as="sourcePoint" />
+            <mxPoint x="470" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="0OzzKOd5zw0-2eA2JMB0-2" value="MagnetronRingbuffer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="240" width="160" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="0OzzKOd5zw0-2eA2JMB0-3" value="&lt;div&gt;+ size: int&lt;/div&gt;&lt;div&gt;+ filled: int&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="0OzzKOd5zw0-2eA2JMB0-2">
+          <mxGeometry y="26" width="160" height="34" as="geometry" />
+        </mxCell>
+        <mxCell id="0OzzKOd5zw0-2eA2JMB0-4" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="0OzzKOd5zw0-2eA2JMB0-2">
+          <mxGeometry y="60" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="0OzzKOd5zw0-2eA2JMB0-5" value="&lt;div&gt;+ add(bool)&lt;/div&gt;&lt;div&gt;+ get(): List[bool]&lt;/div&gt;&lt;div&gt;+ power_share(): int&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="0OzzKOd5zw0-2eA2JMB0-2">
+          <mxGeometry y="68" width="160" height="52" as="geometry" />
+        </mxCell>
+        <mxCell id="0OzzKOd5zw0-2eA2JMB0-6" value="Ringbuffer" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="480" y="80" width="160" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="0OzzKOd5zw0-2eA2JMB0-7" value="&lt;div&gt;+ size: int&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="0OzzKOd5zw0-2eA2JMB0-6">
+          <mxGeometry y="26" width="160" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="0OzzKOd5zw0-2eA2JMB0-8" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" vertex="1" parent="0OzzKOd5zw0-2eA2JMB0-6">
+          <mxGeometry y="50" width="160" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="0OzzKOd5zw0-2eA2JMB0-9" value="&lt;div&gt;+ add(any)&lt;/div&gt;&lt;div&gt;+ get(): list()&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" vertex="1" parent="0OzzKOd5zw0-2eA2JMB0-6">
+          <mxGeometry y="58" width="160" height="42" as="geometry" />
+        </mxCell>
+        <mxCell id="0OzzKOd5zw0-2eA2JMB0-10" value="" style="endArrow=block;endSize=16;endFill=0;html=1;rounded=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;exitX=0.5;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="0OzzKOd5zw0-2eA2JMB0-2" target="0OzzKOd5zw0-2eA2JMB0-6">
+          <mxGeometry width="160" relative="1" as="geometry">
+            <mxPoint x="560" y="318" as="sourcePoint" />
+            <mxPoint x="760" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

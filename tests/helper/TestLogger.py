@@ -23,3 +23,10 @@ class TestLogger(unittest.TestCase):
 
         logger.set_level(LogLevel.ERROR)
         self.assertEqual(logger._logger.level, LogLevel.ERROR)
+
+    @patch("logging.Logger.log")
+    def test_log_with_empty_message__does_not_log(self, mock_log):
+        logger = Logger("ServiceD")
+        logger.log("", LogLevel.INFO)
+
+        mock_log.assert_not_called()
