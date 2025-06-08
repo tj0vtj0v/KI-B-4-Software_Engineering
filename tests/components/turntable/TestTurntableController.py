@@ -42,6 +42,14 @@ class TestTurntableController(unittest.TestCase):
 
         self.assertEqual(self.controller.turntable.rotations_per_minute, 5.0 - TURNTABLE_STEP_IN_ROTATIONS_PER_MINUTE)
 
+    def test_update__target_greater_than_current_by_step__sets_to_target(self):
+        self.controller.turntable.rotations_per_minute = 0.0
+        self.controller.target_rotations_per_minute = TURNTABLE_STEP_IN_ROTATIONS_PER_MINUTE
+
+        self.controller.update()
+
+        self.assertEqual(self.controller.turntable.rotations_per_minute, TURNTABLE_STEP_IN_ROTATIONS_PER_MINUTE)
+
     def test_set_speed__valid_value__updates_target_rotations(self):
         self.controller.set_speed(3.0)
 

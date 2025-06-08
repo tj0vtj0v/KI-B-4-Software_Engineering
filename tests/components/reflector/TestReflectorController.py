@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 
 from src.components.reflector.Reflector import Reflector
 from src.components.reflector.ReflectorController import ReflectorController
-from src.helper.config import REFLECTOR_MAX_ANGLE_IN_DEGREES, REFLECTOR_MIN_ANGLE_IN_DEGREES
+from src.helper.config import REFLECTOR_MAX_ANGLE_IN_DEGREES, REFLECTOR_MIN_ANGLE_IN_DEGREES, REFLECTOR_STEP_IN_DEGREES
 
 
 class TestReflectorController(unittest.TestCase):
@@ -68,6 +68,14 @@ class TestReflectorController(unittest.TestCase):
         self.reflector_controller.update()
 
         self.assertEqual(self.reflector_controller.reflector.angle, REFLECTOR_MIN_ANGLE_IN_DEGREES)
+
+    def test_update__target_greater_than_current_by_step__sets_to_target(self):
+        self.reflector_controller.reflector.angle = 0.0
+        self.reflector_controller.target_angle = REFLECTOR_STEP_IN_DEGREES
+
+        self.reflector_controller.update()
+
+        self.assertEqual(self.reflector_controller.reflector.angle, REFLECTOR_STEP_IN_DEGREES)
 
     def test_emergency_stop__called__angle_and_target_are_zero(self):
         self.reflector_controller.reflector.angle = 45

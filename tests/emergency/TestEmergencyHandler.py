@@ -2,6 +2,7 @@ import unittest
 from unittest.mock import MagicMock, patch
 
 from src.emergency.EmergencyHandler import EmergencyHandler
+from src.helper.Logger import LogLevel
 from src.helper.exceptions import CustomException, MockException, DoorException
 
 
@@ -134,4 +135,17 @@ class TestEmergencyHandler(unittest.TestCase):
             log_mock.assert_called()
 
         self.assertTrue(sys_control.stop_called)
+        sys_control.alarm_controller.deactivate_alarm.assert_called_once()
+
+    def test_handle_emergency__no_error__logs_and_resets(self):
+        handler = EmergencyHandler()
+        handler.error = None
+        sys_control = DummySystemControl()
+        sys_control.alarm_controller.deactivate_alarm = MagicMock()
+
+        with patch.object(handler.logger, "log") as log_mock:
+            handler.handle_emergency(sys_control)
+            log_mock.assert_called_with("Resetting system.", level=LogLevel.ERROR)
+
+        self.assertTrue(sys_control.reset_called)
         sys_control.alarm_controller.deactivate_alarm.assert_called_once()
