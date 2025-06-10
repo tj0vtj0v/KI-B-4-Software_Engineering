@@ -34,12 +34,19 @@ class SensorManager:
                                                 self.magnetron_temp2_sensor]
 
     def update_sensors(self):
-        self.logger.log("Updating all sensors.", level=LogLevel.DEBUG)
+        self.logger.log("Updating all sensors", LogLevel.DEBUG)
         for sensor in self.sensors:
             sensor.update()
 
+        self.logger.log(f"Magnetron Temp 1: {self.magnetron_temp1()}", LogLevel.DEBUG)
+        self.logger.log(f"Magnetron Temp 2: {self.magnetron_temp2()}", LogLevel.DEBUG)
+        self.logger.log(f"Inner Temp 1: {self.inner_temp1()}", LogLevel.DEBUG)
+        self.logger.log(f"Inner Temp 2: {self.inner_temp2()}", LogLevel.DEBUG)
+        self.logger.log(f"Inner Weight: {self.inner_weight()}", LogLevel.DEBUG)
+        self.logger.log(f"Inner humidity: {self.inner_humidity()}", LogLevel.DEBUG)
+
     def reset(self):
-        self.logger.log("Resetting all sensors.", level=LogLevel.DEBUG)
+        self.logger.log("Resetting all sensors", LogLevel.INFO)
         for sensor in self.sensors:
             sensor.reset()
 

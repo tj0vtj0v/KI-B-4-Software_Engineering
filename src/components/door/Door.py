@@ -17,13 +17,13 @@ class Door:
     def open(self):
         if not self.opened:
             self.opened = True
-            self.logger.log("Door is now open.", level=LogLevel.INFO)
+            self.logger.log("Door is now open.", LogLevel.INFO)
         else:
-            self.logger.log("Door is already open.", level=LogLevel.WARNING)
+            self.logger.log("Door is already open.", LogLevel.WARNING)
 
     def close(self):
         if self.opened:
             self.opened = False
-            self.logger.log("Door is now closed.", level=LogLevel.INFO)
+            self.logger.log("Door is now closed.", LogLevel.INFO)
         else:
-            self.logger.log("Door is already closed.", level=LogLevel.WARNING)
+            self.logger.log("Door is already closed.", LogLevel.WARNING)

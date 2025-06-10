@@ -12,6 +12,12 @@ if TYPE_CHECKING:
 class EmergencyHandler:
     error: CustomException | None = None
     logger = Logger("EmergencyHandler")
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(EmergencyHandler, cls).__new__(cls)
+        return cls._instance
 
     @classmethod
     def observe(cls, func):

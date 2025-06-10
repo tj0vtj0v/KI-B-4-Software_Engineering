@@ -21,23 +21,26 @@ class DoorController:
     def lock(self):
         if not self.door.opened:
             if self.locked:
-                self.logger.log("Door is already locked.", level=LogLevel.INFO)
+                self.logger.log("Door is already locked.", LogLevel.INFO)
             else:
-                self.logger.log("Door is now locked.", level=LogLevel.INFO)
+                self.logger.log("Door is now locked.", LogLevel.INFO)
                 self.locked = True
         else:
-            self.logger.log("Cannot lock the door while it is open.", level=LogLevel.WARNING)
+            self.logger.log("Cannot lock the door while it is open.", LogLevel.WARNING)
 
     def unlock(self):
         if not self.door.opened:
             if not self.locked:
-                self.logger.log("Door is already unlocked.", level=LogLevel.INFO)
+                self.logger.log("Door is already unlocked.", LogLevel.INFO)
             else:
-                self.logger.log("Door is now unlocked.", level=LogLevel.INFO)
+                self.logger.log("Door is now unlocked.", LogLevel.INFO)
                 self.locked = False
         else:
-            self.logger.log("Cannot unlock the door while it is open.", level=LogLevel.WARNING)
+            self.logger.log("Cannot unlock the door while it is open.", LogLevel.WARNING)
 
     def check(self):
+        self.logger.log(f"Door locked: {self.locked} and opened: {self.door.opened}", LogLevel.DEBUG)
+
         if self.locked and self.door.opened:
+            self.logger.log("Door is locked and was forcefully opened.", LogLevel.CRITICAL)
             raise DoorException("Door is locked and was forcefully opened.")

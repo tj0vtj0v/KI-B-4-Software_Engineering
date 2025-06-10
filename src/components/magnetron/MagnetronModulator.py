@@ -12,6 +12,13 @@ from src.helper.logging.LogLevel import LogLevel
 
 
 class MagnetronModulator:
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(MagnetronModulator, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self):
         self.logger = Logger("MagnetronControl")
         self.power_history = MagnetronRingbuffer(60 // MAGNETRON_ON_OFF_INTERVAL_IN_SECONDS)

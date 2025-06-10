@@ -18,6 +18,13 @@ class SystemControl:
         RUNNING = "RUNNING"
         EMERGENCY = "EMERGENCY"
 
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(SystemControl, cls).__new__(cls)
+        return cls._instance
+
     def __init__(self, ):
         self.state = self.State.IDLE
 
@@ -29,26 +36,26 @@ class SystemControl:
         self.sensor_manager = SensorManager()
 
     def factory_reset(self):
-        self.logger.log("Performing factory reset.")
+        self.logger.log("Performing factory reset", LogLevel.INFO)
 
         self.__init__()
 
     def declare_emergency(self):
         if self.state != self.State.EMERGENCY:
-            self.logger.log("Declaring emergency state.")
+            self.logger.log("Declaring emergency state", LogLevel.INFO)
 
             if not self.alarm_controller.is_alarming():
                 self.alarm_controller.activate_alarm()
             self.state = self.State.EMERGENCY
 
         else:
-            self.logger.log("System is already in emergency state.")
+            self.logger.log("System is already in emergency state", LogLevel.WARNING)
 
     def stop(self):
         if self.state == self.State.IDLE:
-            self.logger.log("System is already idle, nothing to shut down.")
+            self.logger.log("System is already idle, nothing to shut down", LogLevel.WARNING)
         else:
-            self.logger.log("Shutting down system.")
+            self.logger.log("Shutting down system", LogLevel.INFO)
 
             self.sensor_manager.reset()
             self.program_controller.stop()
@@ -60,9 +67,9 @@ class SystemControl:
 
             threading.Thread(target=self.loop).start()
 
-            self.logger.log("System started.")
+            self.logger.log("System started", LogLevel.INFO)
         else:
-            self.logger.log("System is already running or in emergency state.", level=LogLevel.WARNING)
+            self.logger.log("System is already running or in emergency state.", LogLevel.WARNING)
 
     def loop(self):
         while True:
@@ -70,21 +77,21 @@ class SystemControl:
 
             match self.state:
                 case self.State.IDLE:
-                    self.logger.log("System is idle.")
+                    self.logger.log("System is idle", LogLevel.INFO)
                     break  # TODO build a watchdog to wake up
 
                 case self.State.RUNNING:
-                    self.logger.log("System is running.")
+                    self.logger.log("System is running", LogLevel.DEBUG)
 
                     self.loop_action()
 
                 case self.State.EMERGENCY:
-                    self.logger.log("Emergency state!", level=LogLevel.WARNING)
+                    self.logger.log("Emergency state!", LogLevel.WARNING)
 
                     if self.emergency_handler.is_busy():
                         self.emergency_handler.handle_emergency(self)
                     else:
-                        self.logger.log("No error to handle, exiting emergency state.")
+                        self.logger.log("No error to handle, exiting emergency state", LogLevel.INFO)
 
                         self.state = self.State.RUNNING
 
