@@ -17,3 +17,10 @@ class DoorException(CustomException):
 
     def __init__(self, message):
         super().__init__(message)
+
+
+class ProgramAlreadyRunningException(CustomException):
+    """Exception raised when a program is already running."""
+
+    def __init__(self):
+        super().__init__("A program is already running.")

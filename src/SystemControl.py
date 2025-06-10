@@ -4,9 +4,11 @@ import time
 from src.components.alarm.AlarmController import AlarmController
 from src.components.sensor.SensorManager import SensorManager
 from src.emergency.EmergencyHandler import EmergencyHandler
+from src.helper.Action import Action
 from src.helper.Logger import Logger, LogLevel
 from src.helper.config import MAIN_LOOP_TIMEOUT_IN_SECONDS
-from src.program.MockProgramController import MockProgramController
+from src.helper.exceptions import ProgramAlreadyRunningException
+from src.program.ProgramController import ProgramController
 from src.user.MockUserInteractionHandler import MockUserInteractionHandler
 
 
@@ -23,7 +25,7 @@ class SystemControl:
         self.emergency_handler = EmergencyHandler()
         self.alarm_controller = AlarmController()
         self.user_interaction_handler = MockUserInteractionHandler()
-        self.program_controller = MockProgramController()
+        self.program_controller = ProgramController()
         self.sensor_manager = SensorManager()
 
     def factory_reset(self):
@@ -55,7 +57,6 @@ class SystemControl:
     def start(self):
         if self.state == self.State.IDLE:
             self.state = self.State.RUNNING
-            self.program_controller.start()
 
             threading.Thread(target=self.loop).start()
 
@@ -89,9 +90,37 @@ class SystemControl:
 
     @EmergencyHandler.observe
     def loop_action(self):
-        self.user_interaction_handler.get_interactions()
+        action, program = self.user_interaction_handler.get_interactions()
 
-        self.program_controller.update()
+        if action is not None:
+            match action:
+                case Action.START:
+                    if not self.program_controller.is_running():
+                        self.program_controller.start(program)
+                    else:
+                        raise ProgramAlreadyRunningException()
 
-        self.user_interaction_handler.update_display()
+                case Action.STOP:
+                    if self.program_controller.is_running():
+                        self.program_controller.stop()
+                    else:
+                        self.logger.log("No program running, nothing to stop", LogLevel.INFO)
+
+                case Action.PAUSE:
+                    if self.program_controller.is_running() and not self.program_controller.is_paused():
+                        self.program_controller.pause()
+                    else:
+                        self.logger.log("No program running, nothing to pause", LogLevel.INFO)
+
+                case Action.RESUME:
+                    if self.program_controller.is_running() and self.program_controller.is_paused():
+                        self.program_controller.resume()
+                    else:
+                        self.logger.log("No running program paused, nothing to resume", LogLevel.INFO)
+
+        self.user_interaction_handler.update_display(*self.program_controller.get_state_tupel())
         self.sensor_manager.update_sensors()
+
+    def emergency_stop_program(self):
+        self.logger.log("Emergency stopping the program", LogLevel.INFO)
+        self.program_controller.emergency_stop()
