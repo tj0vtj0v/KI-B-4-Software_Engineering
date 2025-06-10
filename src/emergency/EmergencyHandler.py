@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 from src.helper.Logger import Logger, LogLevel
-from src.helper.exceptions import CustomException, MockException, DoorException
+from src.helper.exceptions import CustomException, MockException, DoorException, ProgramAlreadyRunningException
 
 if TYPE_CHECKING:
     from src.SystemControl import SystemControl
@@ -12,6 +12,12 @@ if TYPE_CHECKING:
 class EmergencyHandler:
     error: CustomException | None = None
     logger = Logger("EmergencyHandler")
+    _instance = None
+
+    def __new__(cls, *args, **kwargs):
+        if cls._instance is None:
+            cls._instance = super(EmergencyHandler, cls).__new__(cls)
+        return cls._instance
 
     @classmethod
     def observe(cls, func):
@@ -20,12 +26,12 @@ class EmergencyHandler:
                 return func(self, *args, **kwargs)
 
             except CustomException as e:
-                cls.logger.log("Internal error occurred, entering emergency state.", level=LogLevel.ERROR)
+                cls.logger.log("Internal error occurred, entering emergency state.", LogLevel.ERROR)
                 self.declare_emergency()
                 cls.error = e
 
             except Exception as e:
-                cls.logger.log(f"Major error ({e}) occurred, shutting down.", level=LogLevel.CRITICAL)
+                cls.logger.log(f"Major error ({e}) occurred, shutting down.", LogLevel.CRITICAL)
                 raise e
 
         return wrapper
@@ -38,19 +44,26 @@ class EmergencyHandler:
         system_control.alarm_controller.deactivate_alarm()
 
         if isinstance(self.error, MockException):
-            self.logger.log("Mock exception occurred, simulating emergency handling.", level=LogLevel.ERROR)
+            self.logger.log("Mock exception occurred, simulating emergency handling.", LogLevel.ERROR)
             EmergencyHandler.error = None
 
             return
 
         if isinstance(self.error, DoorException):
-            self.logger.log("Door exception occurred, stopping the system.", level=LogLevel.ERROR)
-            system_control.stop()
+            self.logger.log("Door exception occurred, stopping the running program.", LogLevel.ERROR)
+            system_control.emergency_stop_program()
             EmergencyHandler.error = None
 
             return
 
-        self.logger.log("Resetting system.", level=LogLevel.ERROR)
+        if isinstance(self.error, ProgramAlreadyRunningException):
+            self.logger.log("A Program already running.", LogLevel.ERROR)
+            EmergencyHandler.error = None
+
+            return
+
+        self.logger.log("Resetting system.", LogLevel.ERROR)
+        system_control.stop()
         system_control.factory_reset()
 
         # For real errors, the handling will be added later

@@ -1,6 +1,6 @@
 import random
 
-from src.components.cooling.MockCoolingFan import MockCoolingFan
+from src.components.cooling.CoolingFan import CoolingFan
 from src.components.magnetron.Magnetron import Magnetron
 from src.components.sensor.SimulationSensor import SimulationSensor
 from src.helper.config import AMBIENT_TEMPERATURE_IN_CELSIUS
@@ -16,7 +16,7 @@ class SimulationSensorMagnetronTemp1(SimulationSensor):
 
     def __init__(self):
         self.magnetron = Magnetron()
-        self.cooling_fan = MockCoolingFan()
+        self.cooling_fan = CoolingFan()
         self.temperature = AMBIENT_TEMPERATURE_IN_CELSIUS
 
     def get(self) -> float:

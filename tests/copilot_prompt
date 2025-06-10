@@ -1,9 +1,18 @@
-please help me generating tests and extending the current ones due to updates in the corresponding implementation file. you may take the TestAlarmController or the TestDoorControler as reference, please use unittest and the class shall inherit from it.
-remember the guidelines:
-Test function naming: test_<function>__<condition>__<expected>()
-Example:
+Generate complete unit test files in Python using the unittest framework. Test classes must inherit from unittest.TestCase.
+Use the naming convention for test methods: test_<function>__<condition>__<expected>(), e.g. def test_is_door_opened__additional_parameter__raises_type_error(): ...
 
-def test_is_door_opened__additional_parameter__raises_type_error():
-    ...
+Extend existing tests to cover recent implementation changes and add tests for any untested but straightforward functionality.
+Between the setup / execution step and the assertin step, please insert a free line to enhance readability.
 
-always generate a complete file. dont generate comments in the code, generate as fast as possible. and if you recognize untested parts, which can be easily tested, add them!
+Include setUp() and tearDown() methods for shared setup and cleanup, if necessary.
+Employ unittest.mock to isolate the unit under test from external dependencies (e.g., I/O, network, hardware).
+For functions with multiple input/output scenarios, implement parameterized testing using helper methods or loops inside test methods.
+Use assertions such as assertEqual, assertRaises, assertTrue, consistently and meaningfully.
+
+Focus on edge cases, boundary conditions, invalid inputs, and expected exceptions.
+Ensure all tests are independent, without relying on side effects or execution order.
+Keep the tests clear, concise, and comprehensive without any comments.
+
+Also The file is named Test<ClassToTest> please view the ClassToTest in src (not tests) prior to the test generation.
+
+ClassToTest:

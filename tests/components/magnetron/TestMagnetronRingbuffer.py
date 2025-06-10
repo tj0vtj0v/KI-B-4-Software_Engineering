@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import MagicMock
 
 from src.components.magnetron.MagnetronRingbuffer import MagnetronRingbuffer
 
@@ -6,6 +7,9 @@ from src.components.magnetron.MagnetronRingbuffer import MagnetronRingbuffer
 class TestMagnetronRingbuffer(unittest.TestCase):
     def setUp(self):
         self.ringbuffer = MagnetronRingbuffer(5)
+
+    def tearDown(self):
+        del self.ringbuffer
 
     def test_add__valid_boolean__updates_filled_and_length(self):
         self.ringbuffer.add(True)
@@ -68,3 +72,29 @@ class TestMagnetronRingbuffer(unittest.TestCase):
         self.ringbuffer.add(False)
 
         self.assertEqual(self.ringbuffer.power_share(), 2 / 5)
+
+    def test_add__boundary_condition_size_one__handles_correctly(self):
+        ringbuffer = MagnetronRingbuffer(1)
+        ringbuffer.add(True)
+        ringbuffer.add(False)
+
+        self.assertEqual(ringbuffer.get(), [False])
+
+    def test_power_share__all_false_items__returns_zero(self):
+        self.ringbuffer.add(False)
+        self.ringbuffer.add(False)
+        self.ringbuffer.add(False)
+
+        self.assertEqual(self.ringbuffer.power_share(), 0)
+
+    def test_power_share__all_true_items__returns_one(self):
+        self.ringbuffer.add(True)
+        self.ringbuffer.add(True)
+        self.ringbuffer.add(True)
+
+        self.assertEqual(self.ringbuffer.power_share(), 1)
+
+    def test_get__mocked_super_get__returns_mocked_value(self):
+        self.ringbuffer.get = MagicMock(return_value=[True, False, True])
+
+        self.assertEqual(self.ringbuffer.get(), [True, False, True])

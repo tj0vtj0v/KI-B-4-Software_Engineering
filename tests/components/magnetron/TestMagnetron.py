@@ -5,7 +5,14 @@ from src.components.magnetron.Magnetron import Magnetron
 
 class TestMagnetron(unittest.TestCase):
     def setUp(self):
+        Magnetron._instance = None
         self.magnetron = Magnetron()
+
+    def test_singleton__multiple_instances__same_object(self):
+        magnetron_1 = Magnetron()
+        magnetron_2 = Magnetron()
+
+        self.assertIs(magnetron_1, magnetron_2, "Magnetron should be a singleton")
 
     def test_active__initial_state__is_false(self):
         self.assertFalse(self.magnetron.active, "Magnetron should be inactive initially")

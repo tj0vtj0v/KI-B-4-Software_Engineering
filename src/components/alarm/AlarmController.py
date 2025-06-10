@@ -6,7 +6,7 @@ from src.helper.logging.LogLevel import LogLevel
 class AlarmController:
     _instance = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls):
         if cls._instance is None:
             cls._instance = super(AlarmController, cls).__new__(cls)
         return cls._instance
@@ -17,17 +17,17 @@ class AlarmController:
 
     def activate_alarm(self):
         if not self.alarm.active:
-            self.logger.log("Activating alarm.", level=LogLevel.INFO)
+            self.logger.log("Activating alarm.", LogLevel.INFO)
             self.alarm.active = True
         else:
-            self.logger.log("Alarm is already active.", level=LogLevel.WARNING)
+            self.logger.log("Alarm is already active.", LogLevel.WARNING)
 
     def deactivate_alarm(self):
         if self.alarm.active:
-            self.logger.log("Deactivating alarm.", level=LogLevel.INFO)
+            self.logger.log("Deactivating alarm.", LogLevel.INFO)
             self.alarm.active = False
         else:
-            self.logger.log("Alarm is already inactive.", level=LogLevel.WARNING)
+            self.logger.log("Alarm is already inactive.", LogLevel.WARNING)
 
     def is_alarming(self) -> bool:
         return self.alarm.active
