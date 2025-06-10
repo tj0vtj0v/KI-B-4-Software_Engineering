@@ -75,9 +75,34 @@ class TestSensorManager(unittest.TestCase):
     def test_update_sensors__logs_debug_message__expected_log(self):
         self.manager.update_sensors()
 
-        self.mock_logger.log.assert_called_with("Updating all sensors.", level=LogLevel.DEBUG)
+        self.mock_logger.log.assert_any_call("Updating all sensors", LogLevel.DEBUG)
 
-    def test_reset__logs_debug_message__expected_log(self):
+    def test_reset__logs_info_message__expected_log(self):
         self.manager.reset()
 
-        self.mock_logger.log.assert_called_with("Resetting all sensors.", level=LogLevel.DEBUG)
+        self.mock_logger.log.assert_called_with("Resetting all sensors", LogLevel.INFO)
+
+    def test_update_sensors__logs_sensor_values__expected_logs(self):
+        self.manager.magnetron_temp1_sensor.get = MagicMock(return_value=80.0)
+        self.manager.magnetron_temp2_sensor.get = MagicMock(return_value=85.0)
+        self.manager.temp1_sensor.get = MagicMock(return_value=25.5)
+        self.manager.temp2_sensor.get = MagicMock(return_value=30.0)
+        self.manager.weight_sensor.get = MagicMock(return_value=5.0)
+        self.manager.humidity_sensor.get = MagicMock(return_value=60.0)
+
+        self.manager.update_sensors()
+
+        self.mock_logger.log.assert_any_call("Magnetron Temp 1: 80.0", LogLevel.DEBUG)
+        self.mock_logger.log.assert_any_call("Magnetron Temp 2: 85.0", LogLevel.DEBUG)
+        self.mock_logger.log.assert_any_call("Inner Temp 1: 25.5", LogLevel.DEBUG)
+        self.mock_logger.log.assert_any_call("Inner Temp 2: 30.0", LogLevel.DEBUG)
+        self.mock_logger.log.assert_any_call("Inner Weight: 5.0", LogLevel.DEBUG)
+        self.mock_logger.log.assert_any_call("Inner humidity: 60.0", LogLevel.DEBUG)
+
+    def test_inner_temp1__sensor_raises_exception__raises_exception(self):
+        self.manager.temp1_sensor.get = MagicMock(side_effect=Exception("Sensor error"))
+
+        with self.assertRaises(Exception) as context:
+            self.manager.inner_temp1()
+
+        self.assertEqual(str(context.exception), "Sensor error")

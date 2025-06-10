@@ -6,54 +6,54 @@ from src.helper.logging.LogLevel import LogLevel
 
 
 class TestDoor(unittest.TestCase):
+    def setUp(self):
+        Door._instance = None
+        self.door = Door()
+        self.mock_logger = MagicMock()
+        self.door.logger = self.mock_logger
+
     def test_open__initial_state__opened_is_false(self):
-        door = Door()
-        self.assertFalse(door.opened)
+        self.assertFalse(self.door.opened)
 
     def test_singleton_behavior__multiple_instances__same_object(self):
         door1 = Door()
         door2 = Door()
 
         self.assertIs(door1, door2)
-        self.assertIs(door1.logger, door2.logger)
-        self.assertEqual(door1.opened, door2.opened)
 
     def test_open__closed_door__opened_is_true_and_logs_open(self):
-        door = Door()
-        mock_logger = MagicMock()
-        door.logger = mock_logger
+        self.door.open()
 
-        door.open()
-
-        self.assertTrue(door.opened)
-        mock_logger.log.assert_called_with("Door is now open.", level=LogLevel.INFO)
+        self.assertTrue(self.door.opened)
+        self.mock_logger.log.assert_called_with("Door is now open.", LogLevel.INFO)
 
     def test_open__already_open_door__logs_already_open(self):
-        door = Door()
-        mock_logger = MagicMock()
-        door.logger = mock_logger
+        self.door.open()
+        self.door.open()
 
-        door.open()
-        door.open()
-
-        mock_logger.log.assert_any_call("Door is already open.", level=LogLevel.WARNING)
+        self.mock_logger.log.assert_any_call("Door is already open.", LogLevel.WARNING)
 
     def test_close__open_door__opened_is_false_and_logs_closed(self):
-        door = Door()
-        mock_logger = MagicMock()
-        door.logger = mock_logger
+        self.door.open()
+        self.door.close()
 
-        door.open()
-        door.close()
-
-        self.assertFalse(door.opened)
-        mock_logger.log.assert_any_call("Door is now closed.", level=LogLevel.INFO)
+        self.assertFalse(self.door.opened)
+        self.mock_logger.log.assert_any_call("Door is now closed.", LogLevel.INFO)
 
     def test_close__already_closed_door__logs_already_closed(self):
-        door = Door()
-        mock_logger = MagicMock()
-        door.logger = mock_logger
+        self.door.close()
 
-        door.close()
+        self.mock_logger.log.assert_any_call("Door is already closed.", LogLevel.WARNING)
 
-        mock_logger.log.assert_any_call("Door is already closed.", level=LogLevel.WARNING)
+    def test_open__multiple_calls__logs_correctly(self):
+        for _ in range(3):
+            self.door.open()
+
+        self.mock_logger.log.assert_any_call("Door is already open.", LogLevel.WARNING)
+
+    def test_close__multiple_calls__logs_correctly(self):
+        self.door.open()
+        for _ in range(3):
+            self.door.close()
+
+        self.mock_logger.log.assert_any_call("Door is already closed.", LogLevel.WARNING)

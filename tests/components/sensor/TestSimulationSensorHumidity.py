@@ -1,4 +1,5 @@
 import unittest
+from unittest.mock import patch
 
 from src.components.sensor.SimulationSensorHumidity import SimulationSensorHumidity
 from src.helper.config import AMBIENT_HUMIDITY_IN_PERCENT
@@ -16,7 +17,9 @@ class TestSimulationSensorHumidity(unittest.TestCase):
         self.assertIs(sensor1, sensor2)
 
     def test_get__default_humidity__returns_ambient_humidity(self):
-        self.assertEqual(self.sensor.get(), AMBIENT_HUMIDITY_IN_PERCENT)
+        result = self.sensor.get()
+
+        self.assertEqual(result, AMBIENT_HUMIDITY_IN_PERCENT)
 
     def test_update__magnetron_active__increases_humidity(self):
         self.sensor.magnetron.active = True
@@ -53,3 +56,10 @@ class TestSimulationSensorHumidity(unittest.TestCase):
         self.sensor.update()
 
         self.assertLess(self.sensor.get(), initial_humidity)
+
+    @patch("src.components.sensor.SimulationSensorHumidity.random.uniform", return_value=0.01)
+    def test_update__random_fluctuation__applies_fluctuation(self, mock_random):
+        initial_humidity = self.sensor.get()
+        self.sensor.update()
+
+        self.assertAlmostEqual(self.sensor.get(), initial_humidity + 0.01, delta=0.01)

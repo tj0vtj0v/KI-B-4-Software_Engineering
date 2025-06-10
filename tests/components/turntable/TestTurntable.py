@@ -22,6 +22,11 @@ class TestTurntable(unittest.TestCase):
 
         self.assertEqual(self.turntable.rotations_per_minute, 10.0)
 
+    def test_set_rotations_per_minute__negative_value__updates_rotations(self):
+        self.turntable.rotations_per_minute = -5.0
+
+        self.assertEqual(self.turntable.rotations_per_minute, -5.0)
+
     def test_stop__called__rotations_per_minute_is_zero(self):
         self.turntable.rotations_per_minute = 15.0
         self.turntable.rotations_per_minute = 0.0

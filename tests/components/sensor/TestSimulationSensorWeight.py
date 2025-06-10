@@ -37,14 +37,14 @@ class TestSimulationSensorWeight(unittest.TestCase):
         self.sensor.door.opened = True
         self.sensor.last_door_opened = False
 
-        self.sensor.update()  # First door open
+        self.sensor.update()
         first_update_weight = self.sensor.get()
 
         self.sensor.door.opened = False
-        self.sensor.update()  # Door closed
+        self.sensor.update()
 
         self.sensor.door.opened = True
-        self.sensor.update()  # Door reopened
+        self.sensor.update()
 
         self.assertGreater(self.sensor.get(), first_update_weight)
 
@@ -95,3 +95,21 @@ class TestSimulationSensorWeight(unittest.TestCase):
 
         self.assertGreater(first_update_weight, TURNTABLE_WEIGHT_IN_GRAMS)
         self.assertAlmostEqual(second_update_weight, first_update_weight + 0.03, places=2)
+
+    def test_reset__without_prior_updates__resets_to_default_weight(self):
+        self.sensor.reset()
+
+        self.assertEqual(self.sensor.get(), TURNTABLE_WEIGHT_IN_GRAMS)
+
+    def test_update__multiple_fluctuations__weight_changes_correctly(self):
+        self.sensor.door = MagicMock()
+        self.sensor.door.opened = False
+        initial_weight = self.sensor.get()
+
+        fluctuations = [0.1, -0.05, 0.03]
+        for fluctuation in fluctuations:
+            with patch("random.uniform", return_value=fluctuation):
+                self.sensor.update()
+
+        expected_weight = initial_weight + sum(fluctuations)
+        self.assertAlmostEqual(self.sensor.get(), expected_weight, places=2)
