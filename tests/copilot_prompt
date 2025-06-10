@@ -1,10 +1,10 @@
 Generate complete unit test files in Python using the unittest framework. Test classes must inherit from unittest.TestCase.
 Use the naming convention for test methods: test_<function>__<condition>__<expected>(), e.g. def test_is_door_opened__additional_parameter__raises_type_error(): ...
 
-Use TestAlarmController or TestDoorController as style references.
 Extend existing tests to cover recent implementation changes and add tests for any untested but straightforward functionality.
+Between the setup / execution step and the assertin step, please insert a free line to enhance readability.
 
-Include setUp() and tearDown() methods for shared setup and cleanup.
+Include setUp() and tearDown() methods for shared setup and cleanup, if necessary.
 Employ unittest.mock to isolate the unit under test from external dependencies (e.g., I/O, network, hardware).
 For functions with multiple input/output scenarios, implement parameterized testing using helper methods or loops inside test methods.
 Use assertions such as assertEqual, assertRaises, assertTrue, consistently and meaningfully.
@@ -12,3 +12,7 @@ Use assertions such as assertEqual, assertRaises, assertTrue, consistently and m
 Focus on edge cases, boundary conditions, invalid inputs, and expected exceptions.
 Ensure all tests are independent, without relying on side effects or execution order.
 Keep the tests clear, concise, and comprehensive without any comments.
+
+Also The file is named Test<ClassToTest> please view the ClassToTest in src (not tests) prior to the test generation.
+
+ClassToTest:
