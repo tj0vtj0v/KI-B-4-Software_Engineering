@@ -69,7 +69,7 @@ class SystemControl:
             self.state = self.State.RUNNING
             self.light_controller.start()
 
-            threading.Thread(target=self.loop).start()
+            threading.Thread(target=self.loop, name="SystemThread").start()
 
             self.logger.log("System started", LogLevel.INFO)
         else:
@@ -129,7 +129,7 @@ class SystemControl:
                     else:
                         self.logger.log("No running program paused, nothing to resume", LogLevel.INFO)
 
-        self.user_interaction_handler.update_display(*self.program_controller.get_state_tupel())
+        self.user_interaction_handler.update_display(*self.program_controller.get_state_tuple())
         self.sensor_manager.update_sensors()
 
     def emergency_stop_program(self):

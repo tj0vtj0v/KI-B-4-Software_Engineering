@@ -32,7 +32,7 @@ class CoolingFanController:
             self.logger.log("Starting Cooling Fan", LogLevel.INFO)
 
             self.running = True
-            self.thread = threading.Thread(target=self.cooling_fan_loop)
+            self.thread = threading.Thread(target=self.cooling_fan_loop, name="CoolingThread")
             self.thread.start()
         else:
             self.logger.log("Cooling Fan is already running", LogLevel.WARNING)

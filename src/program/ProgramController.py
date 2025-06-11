@@ -24,7 +24,7 @@ class ProgramController:
 
         self.program = program
 
-        self.thread = threading.Thread(target=self.program.start)
+        self.thread = threading.Thread(target=self.program.start, name="ProgramThread")
         self.thread.start()
 
     def pause(self):
@@ -39,24 +39,39 @@ class ProgramController:
         self.logger.log(f"Stopping program: {self.program.name}", LogLevel.INFO)
         self.program.stop()
 
+        if self.thread:
+            self.thread.join()
+
     def emergency_stop(self):
         self.logger.log(f"Emergency stopping program: {self.program.name}", LogLevel.INFO)
         self.program.emergency_stop()
 
-    def is_running(self):
-        if self.program is not None:
-            return self.program.running
+        if self.thread:
+            self.thread.join()
 
-        return False
+    def is_running(self):
+        if self.program is None:
+            return False
+
+        return self.program.running
 
     def is_finished(self):
+        if self.program is None:
+            return True
+
         return self.program.finished
 
     def is_paused(self):
+        if self.program is None:
+            return False
+
         return self.program.paused
 
     def get_running_program(self):
+        if self.program is None:
+            return "No program running"
+
         return self.program.get_name()
 
-    def get_state_tupel(self) -> tuple[str, bool, bool, bool]:
+    def get_state_tuple(self) -> tuple[str, bool, bool, bool]:
         return self.get_running_program(), self.is_running(), self.is_finished(), self.is_paused()

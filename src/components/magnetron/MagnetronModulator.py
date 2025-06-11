@@ -35,7 +35,7 @@ class MagnetronModulator:
             self.logger.log("Starting Magnetron control", LogLevel.INFO)
 
             self.running = True
-            self.thread = threading.Thread(target=self.magnetron_loop)
+            self.thread = threading.Thread(target=self.magnetron_loop, name="MagnetronThread")
             self.thread.start()
         else:
             self.logger.log("Magnetron control is already running", LogLevel.WARNING)

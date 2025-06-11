@@ -100,12 +100,24 @@ class TestProgramController(unittest.TestCase):
 
         self.assertEqual(result, "TestProgram")
 
-    def test_get_state_tupel__valid_program__returns_correct_tuple(self):
+    def test_get_running_program__no_program__returns_default_message(self):
+        self.program_controller.program = None
+        result = self.program_controller.get_running_program()
+
+        self.assertEqual(result, "No program running")
+
+    def test_get_state_tuple__valid_program__returns_correct_tuple(self):
         self.program_controller.program = self.mock_program
         self.mock_program.get_name.return_value = "TestProgram"
         self.mock_program.running = True
         self.mock_program.finished = False
         self.mock_program.paused = False
-        result = self.program_controller.get_state_tupel()
+        result = self.program_controller.get_state_tuple()
 
         self.assertEqual(result, ("TestProgram", True, False, False))
+
+    def test_get_state_tuple__no_program__returns_default_tuple(self):
+        self.program_controller.program = None
+        result = self.program_controller.get_state_tuple()
+
+        self.assertEqual(result, ("No program running", False, True, False))
