@@ -48,10 +48,12 @@ class TestSystemControl(unittest.TestCase):
         self.system.state = self.system.State.RUNNING
         self.system.sensor_manager.reset = MagicMock()
         self.system.program_controller.stop = MagicMock()
+        self.system.light_controller.stop = MagicMock()
         self.system.stop()
 
         self.system.sensor_manager.reset.assert_called_once()
         self.system.program_controller.stop.assert_called_once()
+        self.system.light_controller.stop.assert_called_once()
         self.assertEqual(self.system.state, self.system.State.IDLE)
 
     def test_factory_reset__called__reinitializes_system(self):

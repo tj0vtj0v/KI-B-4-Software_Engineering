@@ -2,6 +2,7 @@ import threading
 import time
 
 from src.components.alarm.AlarmController import AlarmController
+from src.components.light.LightController import LightController
 from src.components.sensor.SensorManager import SensorManager
 from src.emergency.EmergencyHandler import EmergencyHandler
 from src.helper.Action import Action
@@ -31,6 +32,7 @@ class SystemControl:
         self.logger = Logger("SystemControl")
         self.emergency_handler = EmergencyHandler()
         self.alarm_controller = AlarmController()
+        self.light_controller = LightController()
         self.user_interaction_handler = MockUserInteractionHandler()
         self.program_controller = ProgramController()
         self.sensor_manager = SensorManager()
@@ -59,11 +61,13 @@ class SystemControl:
 
             self.sensor_manager.reset()
             self.program_controller.stop()
+            self.light_controller.stop()
             self.state = self.State.IDLE
 
     def start(self):
         if self.state == self.State.IDLE:
             self.state = self.State.RUNNING
+            self.light_controller.start()
 
             threading.Thread(target=self.loop).start()
 
