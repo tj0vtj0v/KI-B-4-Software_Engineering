@@ -1,0 +1,10 @@
+Please generate the entire Python file based on the following code.
+
+Requirements:
+1. Add complete and clear docstrings for every class and method, describing inputs (`:param`) and outputs (`:return:`) using reStructuredText style.
+2. Include explicit type hints for all method parameters and return types, including `None` where appropriate.
+3. Keep the existing logic and structure unchanged.
+4. Ensure consistent formatting and readability throughout the file.
+
+
+SPEAK AS FAST AS POSSIBLE

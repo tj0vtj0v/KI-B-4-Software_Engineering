@@ -4,26 +4,46 @@ from src.program.Program import Program
 
 
 class DefrostingProgram(Program):
-    _instance = None
+    """
+    Program for defrosting using a microwave oven.
 
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(DefrostingProgram, cls).__new__(cls)
-        return cls._instance
+    Calculates the number of defrosting cycles based on the weight detected by sensors.
+    Controls the magnetron and turntable to achieve the target defrosting temperature.
 
-    def __init__(self):
+    :ivar name: Name of the program.
+    :ivar running: Indicates if the program is running.
+    :ivar paused: Indicates if the program is paused.
+    :ivar just_updated: Indicates if the state was just updated after a cycle.
+    :ivar cycles: Number of remaining defrosting cycles.
+    """
+
+    def __init__(self) -> None:
+        """
+        Initialize the DefrostingProgram.
+
+        Sets up the program name, state flags, and calculates the number of cycles based on the inner weight.
+
+        :return: None
+        """
         super().__init__()
 
-        self.name = "Defrosting Program"
-        self.running = False
-        self.paused = False
-        self.just_updated = False
+        self.name: str = "Defrosting Program"
+        self.running: bool = False
+        self.paused: bool = False
+        self.just_updated: bool = False
 
-        self.cycles = max(1, (self.sensors.inner_weight() - TURNTABLE_WEIGHT_IN_GRAMS) // 100)
+        self.cycles: int = max(1, (self.sensors.inner_weight() - TURNTABLE_WEIGHT_IN_GRAMS) // 100)
         self.logger.log(f"Defrosting will take {self.cycles} cycles")
 
-    def control_components(self):
-        inner_temp = (self.sensors.inner_temp1() + self.sensors.inner_temp2()) / 2
+    def control_components(self) -> None:
+        """
+        Control the components (magnetron, turntable) during the defrosting process.
+
+        Adjusts the magnetron power and manages the cycle state based on temperature readings.
+
+        :return: None
+        """
+        inner_temp: float = (self.sensors.inner_temp1() + self.sensors.inner_temp2()) / 2
 
         if inner_temp > PROGRAM_DEFROSTING_TARGET_TEMP and not self.just_updated:
             self.magnetron.set_target_power_share(0.0)
@@ -41,7 +61,14 @@ class DefrostingProgram(Program):
             self.logger.log(f"Finished {self.name}", LogLevel.INFO)
             self.finished = True
 
-    def start(self):
+    def start(self) -> None:
+        """
+        Start the defrosting program.
+
+        Sets the turntable speed and calls the parent start method.
+
+        :return: None
+        """
         self.turntable.set_speed(2)
 
         super().start()

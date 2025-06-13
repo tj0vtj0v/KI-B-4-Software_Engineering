@@ -15,24 +15,26 @@ from src.helper.logging.LogLevel import LogLevel
 
 class Program(ABC):
     """
-    Abstract base class for a program.
+    Abstract base class for a program that controls various hardware components.
+
+    This class provides the structure for starting, pausing, resuming, stopping,
+    and emergency stopping of a program, as well as managing the control loop
+    and component interactions.
     """
-    pause_condition = threading.Condition()
 
-    logger = Logger("ProgramControl")
-    sensors = SensorManager()
-    door = DoorController()
+    pause_condition: threading.Condition = threading.Condition()
+    logger: Logger = Logger("ProgramControl")
+    sensors: SensorManager = SensorManager()
+    door: DoorController = DoorController()
+    magnetron: MagnetronModulator = MagnetronModulator()
+    cooling_fan: CoolingFanController = CoolingFanController()
+    turntable: TurntableController = TurntableController()
+    reflector: ReflectorController = ReflectorController()
+    components: list = [magnetron, cooling_fan, turntable, reflector]
 
-    magnetron = MagnetronModulator()
-    cooling_fan = CoolingFanController()
-    turntable = TurntableController()
-    reflector = ReflectorController()
-
-    components = [magnetron, cooling_fan, turntable, reflector]
-
-    def __init__(self):
+    def __init__(self) -> None:
         """
-        Defines instance variables
+        Initializes the Program instance with default state variables.
         """
         self.name: str = "Program"
         self.paused: bool = False
@@ -40,35 +42,44 @@ class Program(ABC):
         self.finished: bool = False
 
     @abstractmethod
-    def control_components(self):
+    def control_components(self) -> None:
         """
-        Controls the commands given to the components
+        Abstract method to control the commands given to the components.
+
+        :raises NotImplementedError: If not implemented by subclasses.
         """
         raise NotImplementedError("Method has to be implemented by subclasses")
 
-    def control_loop(self):
+    def control_loop(self) -> None:
         """
         Control loop for the program.
+
+        This loop repeatedly calls `control_components` and updates the turntable
+        and reflector components at a fixed interval, until the program is paused or finished.
         """
         self.logger.log(f"{self.name} control loop started", LogLevel.INFO)
 
         while not self.paused and not self.finished:
             self.control_components()
-
             self.turntable.update()
             self.reflector.update()
-
             time.sleep(PROGRAM_UPDATE_INTERVAL_IN_SECONDS)
 
-    def get_name(self):
+    def get_name(self) -> str:
         """
         Get the name of the program.
+
+        :return: The name of the program.
+        :rtype: str
         """
         return self.name
 
-    def start(self):
+    def start(self) -> None:
         """
         Start the program.
+
+        This method sets the running state, locks the door, starts the magnetron and cooling fan,
+        and enters the main control loop. If paused, it waits until resumed.
         """
         self.logger.log(f"{self.name} is starting", LogLevel.INFO)
 
@@ -87,42 +98,49 @@ class Program(ABC):
                     self.logger.log(f"Paused {self.name}", LogLevel.INFO)
                     self.pause_condition.wait_for(lambda: not self.paused or not self.running)
 
+        self.paused = False
+        self.running = False
+
         self.stop_components()
 
-    def pause(self):
+    def pause(self) -> None:
         """
         Pause the program.
+
+        Sets the paused state to True and logs the action.
         """
         self.logger.log(f"Pausing {self.name}", LogLevel.INFO)
-
         self.paused = True
 
-    def resume(self):
+    def resume(self) -> None:
         """
         Resume the program.
+
+        Sets the paused state to False, notifies all waiting threads, and logs the action.
         """
         self.logger.log(f"Resuming {self.name}", LogLevel.INFO)
-
         self.paused = False
 
         with self.pause_condition:
             self.pause_condition.notify_all()
 
-    def stop(self):
+    def stop(self) -> None:
         """
         Stop the program.
+
+        Sets the paused and running states to False and logs the action.
         """
         self.logger.log(f"Stopping {self.name}", LogLevel.INFO)
-
         self.paused = True
         self.running = False
 
-    def emergency_stop(self):
+    def emergency_stop(self) -> None:
         """
-        Stops all components immediately
+        Stops all components immediately.
+
+        Calls `stop` and then performs an emergency stop on all components and unlocks the door.
         """
         self.logger.log(f"Emergency stopping {self.name}", LogLevel.INFO)
-
         self.stop()
 
         for component in self.components:
@@ -130,9 +148,11 @@ class Program(ABC):
 
         self.door.unlock()
 
-    def stop_components(self):
+    def stop_components(self) -> None:
         """
-        Stops all components
+        Stops all components.
+
+        Iterates through all components and calls their `stop` method, then unlocks the door.
         """
         self.logger.log(f"Stopping all components from {self.name}", LogLevel.INFO)
 

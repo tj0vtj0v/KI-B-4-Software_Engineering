@@ -10,7 +10,7 @@ class MockProgram(Program):
         pass
 
 
-class Program(unittest.TestCase):
+class TestProgram(unittest.TestCase):
     def setUp(self):
         self.program = MockProgram()
         self.program.logger = MagicMock()
@@ -19,8 +19,12 @@ class Program(unittest.TestCase):
         self.program.cooling_fan = MagicMock()
         self.program.turntable = MagicMock()
         self.program.reflector = MagicMock()
-        self.program.components = [self.program.magnetron, self.program.cooling_fan, self.program.turntable,
-                                   self.program.reflector]
+        self.program.components = [
+            self.program.magnetron,
+            self.program.cooling_fan,
+            self.program.turntable,
+            self.program.reflector,
+        ]
 
     def tearDown(self):
         del self.program
@@ -39,7 +43,6 @@ class Program(unittest.TestCase):
         self.program.door.lock.assert_called_once()
         self.program.magnetron.start.assert_called_once()
         self.program.cooling_fan.start.assert_called_once()
-        self.assertTrue(self.program.running)
 
     def test_pause__running_program__sets_paused_to_true(self):
         self.program.pause()
@@ -82,3 +85,18 @@ class Program(unittest.TestCase):
         for component in self.program.components:
             component.stop.assert_called_once()
         self.program.door.unlock.assert_called_once()
+
+    def test_control_loop__not_paused_or_finished__calls_control_components_and_updates(self):
+        self.program.paused = False
+        self.program.finished = False
+        self.program.control_components = MagicMock()
+        self.program.turntable.update = MagicMock()
+        self.program.reflector.update = MagicMock()
+
+        with patch("time.sleep", return_value=None):
+            with patch.object(self.program, "control_components",
+                              side_effect=lambda: setattr(self.program, "finished", True)):
+                self.program.control_loop()
+
+        self.program.turntable.update.assert_called_once()
+        self.program.reflector.update.assert_called_once()

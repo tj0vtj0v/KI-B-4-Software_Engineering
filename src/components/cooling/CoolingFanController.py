@@ -9,35 +9,61 @@ from src.helper.logging.LogLevel import LogLevel
 
 
 class CoolingFanController:
-    _instance = None
+    """
+    Singleton controller for managing the cooling fan based on sensor data.
 
-    def __new__(cls):
+    This class handles the logic for starting, stopping, and adjusting the cooling fan's power share
+    according to the temperature readings from the magnetron sensors.
+    """
+
+    _instance: "CoolingFanController" = None
+
+    def __new__(cls) -> "CoolingFanController":
+        """
+        Ensures only one instance of CoolingFanController exists.
+
+        :return: The singleton instance of CoolingFanController.
+        :rtype: CoolingFanController
+        """
         if not cls._instance:
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self):
-        self.logger = Logger("CoolingControl")
-        self.cooling_fan = CoolingFan()
-        self.sensors = SensorManager()
-        self.target_power_share = 0.0
+    def __init__(self) -> None:
+        """
+        Initializes the CoolingFanController with required components and state variables.
+        """
+        self.logger: Logger = Logger("CoolingControl")
+        self.cooling_fan: CoolingFan = CoolingFan()
+        self.sensors: SensorManager = SensorManager()
+        self.target_power_share: float = 0.0
 
-        self.cooldown = False
-        self.emergency = False
-        self.running = False
-        self.thread = None
+        self.cooldown: bool = False
+        self.emergency: bool = False
+        self.running: bool = False
+        self.thread: threading.Thread | None = None
 
-    def start(self):
+    def start(self) -> None:
+        """
+        Starts the cooling fan control loop in a separate thread.
+
+        :return: None
+        """
         if not self.running:
             self.logger.log("Starting Cooling Fan", LogLevel.INFO)
 
             self.running = True
-            self.thread = threading.Thread(target=self.cooling_fan_loop)
+            self.thread = threading.Thread(target=self.cooling_fan_loop, name="CoolingThread")
             self.thread.start()
         else:
             self.logger.log("Cooling Fan is already running", LogLevel.WARNING)
 
-    def stop(self):
+    def stop(self) -> None:
+        """
+        Initiates a cooldown stop for the cooling fan.
+
+        :return: None
+        """
         if self.running:
             self.logger.log("Stopping Cooling Fan", LogLevel.INFO)
 
@@ -45,7 +71,12 @@ class CoolingFanController:
         else:
             self.logger.log("Cooling Fan is already stopped", LogLevel.WARNING)
 
-    def emergency_stop(self):
+    def emergency_stop(self) -> None:
+        """
+        Immediately stops the cooling fan and waits for the control thread to finish.
+
+        :return: None
+        """
         if self.running:
             self.logger.log("Emergency stopping Cooling Fan", LogLevel.INFO)
 
@@ -57,6 +88,14 @@ class CoolingFanController:
 
     @staticmethod
     def magnetron_temp_to_power_share(magnetron_temp: float) -> float:
+        """
+        Converts the magnetron temperature to a power share value for the cooling fan.
+
+        :param magnetron_temp: The average temperature of the magnetron in degrees Celsius.
+        :type magnetron_temp: float
+        :return: The calculated power share (0.0 to 1.0).
+        :rtype: float
+        """
         if magnetron_temp <= 50.0:
             return 0.0
         elif magnetron_temp <= 100.0:
@@ -66,9 +105,14 @@ class CoolingFanController:
         else:
             return 1.0
 
-    def cooling_fan_cycle(self):
+    def cooling_fan_cycle(self) -> None:
+        """
+        Executes a single control cycle for the cooling fan, updating its power share based on sensor data.
+
+        :return: None
+        """
         self.logger.log(f"Updating Cooling Fan - currently at {self.target_power_share}%", LogLevel.DEBUG)
-        magnetron_temp = (self.sensors.magnetron_temp1() + self.sensors.magnetron_temp2()) / 2.0
+        magnetron_temp: float = (self.sensors.magnetron_temp1() + self.sensors.magnetron_temp2()) / 2.0
 
         self.target_power_share = self.magnetron_temp_to_power_share(magnetron_temp)
 
@@ -89,7 +133,12 @@ class CoolingFanController:
 
         self.cooling_fan.power_share = max(0.0, min(self.cooling_fan.power_share, 1.0))
 
-    def cooling_fan_loop(self):
+    def cooling_fan_loop(self) -> None:
+        """
+        Main loop for controlling the cooling fan, running in a separate thread.
+
+        :return: None
+        """
         self.logger.log("Cooling Fan loop starting", LogLevel.INFO)
 
         while self.running:

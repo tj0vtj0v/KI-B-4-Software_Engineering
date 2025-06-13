@@ -32,6 +32,14 @@ class TestConfig(unittest.TestCase):
         self.assertTrue(hasattr(config, "MAGNETRON_MAX_TEMP_IN_CELSIUS"))
         self.assertIsInstance(config.MAGNETRON_MAX_TEMP_IN_CELSIUS, float)
 
+    def test_COOLING_FAN_STEP_IN_PERCENT__exists_and_is_float(self):
+        self.assertTrue(hasattr(config, "COOLING_FAN_STEP_IN_PERCENT"))
+        self.assertIsInstance(config.COOLING_FAN_STEP_IN_PERCENT, float)
+
+    def test_COOLING_FAN_UPDATE_INTERVAL_IN_SECONDS__exists_and_is_float(self):
+        self.assertTrue(hasattr(config, "COOLING_FAN_UPDATE_INTERVAL_IN_SECONDS"))
+        self.assertIsInstance(config.COOLING_FAN_UPDATE_INTERVAL_IN_SECONDS, float)
+
     def test_TURNTABLE_WEIGHT_IN_GRAMS__exists_and_is_int(self):
         self.assertTrue(hasattr(config, "TURNTABLE_WEIGHT_IN_GRAMS"))
         self.assertIsInstance(config.TURNTABLE_WEIGHT_IN_GRAMS, int)
@@ -59,6 +67,10 @@ class TestConfig(unittest.TestCase):
     def test_REFLECTOR_STEP_IN_DEGREES__exists_and_is_float(self):
         self.assertTrue(hasattr(config, "REFLECTOR_STEP_IN_DEGREES"))
         self.assertIsInstance(config.REFLECTOR_STEP_IN_DEGREES, float)
+
+    def test_LIGHT_UPDATE_INTERVAL_IN_SECONDS__exists_and_is_float(self):
+        self.assertTrue(hasattr(config, "LIGHT_UPDATE_INTERVAL_IN_SECONDS"))
+        self.assertIsInstance(config.LIGHT_UPDATE_INTERVAL_IN_SECONDS, float)
 
     def test_PROGRAM_UPDATE_INTERVAL_IN_SECONDS__exists_and_is_float(self):
         self.assertTrue(hasattr(config, "PROGRAM_UPDATE_INTERVAL_IN_SECONDS"))
