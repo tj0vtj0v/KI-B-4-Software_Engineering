@@ -109,4 +109,4 @@ class TestTurntableController(unittest.TestCase):
     def test_emergency_stop__logs_info_message(self):
         self.controller.emergency_stop()
 
-        self.controller.logger.log.assert_called_with("Emergency stopping reflector controller.", LogLevel.INFO)
+        self.controller.logger.log.assert_called_with("Emergency stopping turntable controller.", LogLevel.INFO)
