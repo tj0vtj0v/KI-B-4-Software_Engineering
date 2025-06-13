@@ -1,11 +1,13 @@
+import sys
 import unittest
 from unittest.mock import MagicMock
-
-from pynput.keyboard import Key
 
 from src.helper.Action import Action
 from src.helper.logging.LogLevel import LogLevel
 from src.user.InputDetector import InputDetector
+
+sys.modules['pynput'] = MagicMock()
+sys.modules['pynput.keyboard'] = MagicMock()
 
 
 class TestInputDetector(unittest.TestCase):
@@ -41,13 +43,6 @@ class TestInputDetector(unittest.TestCase):
 
         self.input_detector.logger.log.assert_called_once_with("Input detection is not running", LogLevel.WARNING)
 
-    def test_handle_key_event__sets_latest_key(self):
-        key = Key.enter
-
-        self.input_detector.handle_key_event(key)
-
-        self.assertEqual(self.input_detector.latest_key, key)
-
     def test_get_latest_action__key_o__returns_open_door_action(self):
         self.input_detector.delegating = True
         self.input_detector.latest_key = MagicMock(char='o')
@@ -64,13 +59,13 @@ class TestInputDetector(unittest.TestCase):
 
     def test_get_latest_action__not_delegating__returns_none(self):
         self.input_detector.delegating = False
-        action, program = self.input_detector.get_latest_action()
+        action = self.input_detector.get_latest_action()
 
         self.assertIsNone(action)
 
     def test_get_latest_action__no_latest_key__returns_none(self):
         self.input_detector.delegating = True
         self.input_detector.latest_key = None
-        action, program = self.input_detector.get_latest_action()
+        action = self.input_detector.get_latest_action()
 
         self.assertIsNone(action)

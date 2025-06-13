@@ -8,6 +8,7 @@ from src.helper.logging.LogLevel import LogLevel
 
 class TestSystemControl(unittest.TestCase):
     def setUp(self):
+        patch('src.user.InputDetector.InputDetector.__init__', return_value=None)
         SystemControl._instance = None
         self.system = SystemControl()
         self.system.logger = MagicMock()

@@ -35,7 +35,7 @@ class InputDetector:
 
     def get_latest_action(self):
         if not self.delegating or self.latest_key is None:
-            return None, None
+            return None
 
         action = None
         match self.latest_key.char if hasattr(self.latest_key, "char") else self.latest_key:

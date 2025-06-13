@@ -1,9 +1,13 @@
+import sys
 import unittest
 from unittest.mock import MagicMock, patch
 
 from src.helper.Action import Action
 from src.program.DefrostingProgram import DefrostingProgram
 from src.user.UserInteractionHandler import UserInteractionHandler
+
+sys.modules['pynput'] = MagicMock()
+sys.modules['pynput.keyboard'] = MagicMock()
 
 
 class TestUserInteractionHandler(unittest.TestCase):
