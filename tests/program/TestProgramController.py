@@ -56,6 +56,14 @@ class TestProgramController(unittest.TestCase):
         )
         self.mock_program.stop.assert_called_once()
 
+    def test_stop__no_program__logs_warning(self):
+        self.program_controller.program = None
+        self.program_controller.stop()
+
+        self.program_controller.logger.log.assert_called_once_with(
+            "No program to stop", LogLevel.WARNING
+        )
+
     def test_emergency_stop__valid_program__logs_and_emergency_stops(self):
         self.program_controller.program = self.mock_program
         self.mock_program.name = "TestProgram"

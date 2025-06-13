@@ -4,13 +4,6 @@ from src.program.Program import Program
 
 
 class DefrostingProgram(Program):
-    _instance = None
-
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super(DefrostingProgram, cls).__new__(cls)
-        return cls._instance
-
     def __init__(self):
         super().__init__()
 
@@ -19,7 +12,7 @@ class DefrostingProgram(Program):
         self.paused = False
         self.just_updated = False
 
-        self.cycles = max(1, (self.sensors.inner_weight() - TURNTABLE_WEIGHT_IN_GRAMS) // 100)
+        self.cycles: int = max(1, (self.sensors.inner_weight() - TURNTABLE_WEIGHT_IN_GRAMS) // 100)
         self.logger.log(f"Defrosting will take {self.cycles} cycles")
 
     def control_components(self):

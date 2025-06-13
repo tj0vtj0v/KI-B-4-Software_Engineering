@@ -58,15 +58,6 @@ class TestDoorController(unittest.TestCase):
         self.assertFalse(self.controller.locked)
         self.mock_logger.log.assert_called_with("Door is already unlocked.", LogLevel.INFO)
 
-    def test_unlock__door_open__warns_and_does_not_unlock(self):
-        self.mock_door.opened = True
-        self.controller.locked = True
-
-        self.controller.unlock()
-
-        self.assertTrue(self.controller.locked)
-        self.mock_logger.log.assert_called_with("Cannot unlock the door while it is open.", LogLevel.WARNING)
-
     def test_check__locked_and_opened__raises_exception(self):
         self.mock_door.opened = True
         self.controller.locked = True

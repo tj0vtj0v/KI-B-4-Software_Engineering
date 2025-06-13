@@ -36,6 +36,10 @@ class ProgramController:
         self.program.resume()
 
     def stop(self):
+        if self.program is None:
+            self.logger.log("No program to stop", LogLevel.WARNING)
+            return
+
         self.logger.log(f"Stopping program: {self.program.name}", LogLevel.INFO)
         self.program.stop()
 

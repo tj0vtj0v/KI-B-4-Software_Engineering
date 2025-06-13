@@ -24,12 +24,6 @@ class TestDefrostingProgram(unittest.TestCase):
         self.mock_sensors.inner_temp1.return_value = AMBIENT_TEMPERATURE_IN_CELSIUS
         self.mock_sensors.inner_temp2.return_value = AMBIENT_TEMPERATURE_IN_CELSIUS
 
-    def test___new____singleton_behavior__returns_same_instance(self):
-        instance1 = DefrostingProgram()
-        instance2 = DefrostingProgram()
-
-        self.assertEqual(instance1, instance2)
-
     def test___init____valid_weight__calculates_cycles_correctly(self):
         self.mock_sensors.inner_weight.return_value = TURNTABLE_WEIGHT_IN_GRAMS + 500
         self.program.sensors = self.mock_sensors

@@ -87,6 +87,9 @@ class Program(ABC):
                     self.logger.log(f"Paused {self.name}", LogLevel.INFO)
                     self.pause_condition.wait_for(lambda: not self.paused or not self.running)
 
+        self.paused = False
+        self.running = False
+
         self.stop_components()
 
     def pause(self):

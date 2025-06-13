@@ -57,7 +57,7 @@ class EmergencyHandler:
             return
 
         if isinstance(self.error, ProgramAlreadyRunningException):
-            self.logger.log("A Program already running.", LogLevel.ERROR)
+            self.logger.log("A Program is already running.", LogLevel.ERROR)
             EmergencyHandler.error = None
 
             return
