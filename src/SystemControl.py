@@ -1,5 +1,6 @@
 import threading
 import time
+from enum import Enum
 
 from src.components.alarm.AlarmController import AlarmController
 from src.components.door.DoorController import DoorController
@@ -15,36 +16,63 @@ from src.user.UserInteractionHandler import UserInteractionHandler
 
 
 class SystemControl:
-    class State:
+    """
+    Singleton class responsible for managing the overall system state, including
+    initialization, emergency handling, and main control loop.
+    """
+
+    class State(Enum):
+        """
+        Enum representing the possible states of the system.
+        """
         IDLE = "IDLE"
         RUNNING = "RUNNING"
         EMERGENCY = "EMERGENCY"
 
-    _instance = None
+    _instance: "SystemControl" = None
 
-    def __new__(cls, *args, **kwargs):
+    def __new__(cls, *args, **kwargs) -> "SystemControl":
+        """
+        Ensures only one instance of SystemControl exists (Singleton pattern).
+
+        :param args: Positional arguments.
+        :param kwargs: Keyword arguments.
+        :return: The singleton instance of SystemControl.
+        """
         if cls._instance is None:
             cls._instance = super(SystemControl, cls).__new__(cls)
         return cls._instance
 
-    def __init__(self, ):
-        self.state = self.State.IDLE
+    def __init__(self) -> None:
+        """
+        Initializes the SystemControl instance, setting up controllers and state.
+        """
+        self.state: SystemControl.State = self.State.IDLE
 
-        self.logger = Logger("SystemControl")
-        self.emergency_handler = EmergencyHandler()
-        self.alarm_controller = AlarmController()
-        self.light_controller = LightController()
-        self.door_controller = DoorController()
-        self.user_interaction_handler = UserInteractionHandler()
-        self.program_controller = ProgramController()
-        self.sensor_manager = SensorManager()
+        self.logger: Logger = Logger("SystemControl")
+        self.emergency_handler: EmergencyHandler = EmergencyHandler()
+        self.alarm_controller: AlarmController = AlarmController()
+        self.light_controller: LightController = LightController()
+        self.door_controller: DoorController = DoorController()
+        self.user_interaction_handler: UserInteractionHandler = UserInteractionHandler()
+        self.program_controller: ProgramController = ProgramController()
+        self.sensor_manager: SensorManager = SensorManager()
 
-    def factory_reset(self):
+    def factory_reset(self) -> None:
+        """
+        Performs a factory reset of the system, reinitializing all components.
+
+        :return: None
+        """
         self.logger.log("Performing factory reset", LogLevel.INFO)
-
         self.__init__()
 
-    def declare_emergency(self):
+    def declare_emergency(self) -> None:
+        """
+        Declares an emergency state, activating the alarm and updating the system state.
+
+        :return: None
+        """
         if self.state != self.State.EMERGENCY:
             self.logger.log("Declaring emergency state", LogLevel.INFO)
 
@@ -55,7 +83,12 @@ class SystemControl:
         else:
             self.logger.log("System is already in emergency state", LogLevel.WARNING)
 
-    def stop(self):
+    def stop(self) -> None:
+        """
+        Stops the system, resetting sensors, stopping programs and lights, and setting state to IDLE.
+
+        :return: None
+        """
         if self.state == self.State.IDLE:
             self.logger.log("System is already idle, nothing to shut down", LogLevel.WARNING)
         else:
@@ -66,7 +99,12 @@ class SystemControl:
             self.light_controller.stop()
             self.state = self.State.IDLE
 
-    def start(self):
+    def start(self) -> None:
+        """
+        Starts the system, initializing the main loop in a separate thread.
+
+        :return: None
+        """
         if self.state == self.State.IDLE:
             self.state = self.State.RUNNING
             self.light_controller.start()
@@ -77,7 +115,12 @@ class SystemControl:
         else:
             self.logger.log("System is already running or in emergency state.", LogLevel.WARNING)
 
-    def loop(self):
+    def loop(self) -> None:
+        """
+        Main control loop of the system, handling state transitions and periodic actions.
+
+        :return: None
+        """
         while True:
             time.sleep(MAIN_LOOP_TIMEOUT_IN_SECONDS)
 
@@ -102,7 +145,12 @@ class SystemControl:
                         self.state = self.State.RUNNING
 
     @EmergencyHandler.observe
-    def loop_action(self):
+    def loop_action(self) -> None:
+        """
+        Executes actions based on user interactions and updates system components.
+
+        :return: None
+        """
         self.door_controller.check()
         action, program = self.user_interaction_handler.get_interactions()
 
@@ -141,6 +189,11 @@ class SystemControl:
         self.user_interaction_handler.update_display(*self.program_controller.get_state_tuple())
         self.sensor_manager.update_sensors()
 
-    def emergency_stop_program(self):
+    def emergency_stop_program(self) -> None:
+        """
+        Immediately stops the running program due to an emergency.
+
+        :return: None
+        """
         self.logger.log("Emergency stopping the program", LogLevel.INFO)
         self.program_controller.emergency_stop()
