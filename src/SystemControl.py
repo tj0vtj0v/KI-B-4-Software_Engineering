@@ -2,6 +2,7 @@ import threading
 import time
 
 from src.components.alarm.AlarmController import AlarmController
+from src.components.door.DoorController import DoorController
 from src.components.light.LightController import LightController
 from src.components.sensor.SensorManager import SensorManager
 from src.emergency.EmergencyHandler import EmergencyHandler
@@ -10,7 +11,7 @@ from src.helper.Logger import Logger, LogLevel
 from src.helper.config import MAIN_LOOP_TIMEOUT_IN_SECONDS
 from src.helper.exceptions import ProgramAlreadyRunningException
 from src.program.ProgramController import ProgramController
-from src.user.MockUserInteractionHandler import MockUserInteractionHandler
+from src.user.UserInteractionHandler import UserInteractionHandler
 
 
 class SystemControl:
@@ -33,7 +34,8 @@ class SystemControl:
         self.emergency_handler = EmergencyHandler()
         self.alarm_controller = AlarmController()
         self.light_controller = LightController()
-        self.user_interaction_handler = MockUserInteractionHandler()
+        self.door_controller = DoorController()
+        self.user_interaction_handler = UserInteractionHandler()
         self.program_controller = ProgramController()
         self.sensor_manager = SensorManager()
 
@@ -101,13 +103,17 @@ class SystemControl:
 
     @EmergencyHandler.observe
     def loop_action(self):
+        self.door_controller.check()
         action, program = self.user_interaction_handler.get_interactions()
 
         if action is not None:
             match action:
                 case Action.START:
                     if not self.program_controller.is_running():
-                        self.program_controller.start(program)
+                        if self.door_controller.door.opened:
+                            self.logger.log("Door is open, program will not start", LogLevel.INFO)
+                        else:
+                            self.program_controller.start(program)
                     else:
                         raise ProgramAlreadyRunningException()
 
@@ -128,6 +134,9 @@ class SystemControl:
                         self.program_controller.resume()
                     else:
                         self.logger.log("No running program paused, nothing to resume", LogLevel.INFO)
+
+                case Action.OFF:
+                    self.stop()
 
         self.user_interaction_handler.update_display(*self.program_controller.get_state_tuple())
         self.sensor_manager.update_sensors()
