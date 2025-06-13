@@ -1,13 +1,9 @@
-import sys
 import unittest
 from unittest.mock import MagicMock
 
 from src.helper.Action import Action
 from src.helper.logging.LogLevel import LogLevel
 from src.user.InputDetector import InputDetector
-
-sys.modules['pynput'] = MagicMock()
-sys.modules['pynput.keyboard'] = MagicMock()
 
 
 class TestInputDetector(unittest.TestCase):

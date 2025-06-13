@@ -5,9 +5,6 @@ from src.main import main
 
 
 class TestMain(unittest.TestCase):
-    def setUp(self):
-        patch('src.user.InputDetector.InputDetector.__init__', return_value=None)
-
     @patch("src.main.time.sleep", return_value=None)
     @patch("src.main.SystemControl")
     def test_main__system_control_start_called__success(self, mock_system_control, mock_sleep):
